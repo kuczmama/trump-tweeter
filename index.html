@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Trump Tweeter</title>
+    <link href="./twitter.css" rel="stylesheet">
+    <script src="./moment.js"></script>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <meta content="utf-8" http-equiv="encoding">
+</head>
+
+<body>
+    <h1 style='text-align: center;'>Trump Tweeter</h1>
+    <div class='container' style='text-align: center; margin-left: auto; margin-right: auto;'>
+    <div style='margin: 0 auto;' class="EmbeddedTweet EmbeddedTweet--cta js-clickToOpenTarget tweet-InformationCircle-widgetParent" data-click-to-open-target="https://twitter.com/realDonaldTrump/status/146994336670822400" data-iframe-title="Twitter Tweet" id="twitter-widget-0" lang="en" data-twitter-event-id="0">
+        <div class="EmbeddedTweet-tweetContainer">
+            <div class="EmbeddedTweet-tweet">
+                <blockquote class="Tweet h-entry js-tweetIdInfo subject expanded" cite="https://twitter.com/realDonaldTrump/status/146994336670822400" data-tweet-id="146994336670822400">
+                    <div class="Tweet-header">
+                        <a class="TweetAuthor-avatar  Identity-avatar u-linkBlend" href="https://twitter.com/realDonaldTrump" aria-label="Donald J. Trump (screen name: realDonaldTrump)"><img class="Avatar" data-src-2x="https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_bigger.jpg" alt="" data-src-1x="https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_normal.jpg" src="https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_normal.jpg"></a>
+                        <div class="TweetAuthor js-inViewportScribingTarget">
+                            <a class="TweetAuthor-link Identity u-linkBlend" aria-label="Donald J. Trump (screen name: realDonaldTrump)">
+                                <div class="TweetAuthor-nameScreenNameContainer">
+                                    <span class="TweetAuthor-decoratedName">
+        <span class="TweetAuthor-name Identity-name customisable-highlight" title="Donald J. Trump" >Donald J. Trump</span>
+                                    <span class="TweetAuthor-verifiedBadge"><div class="Icon Icon--verified " aria-label="Verified Account" title="Verified Account" role="img"></div>
+<b class="u-hiddenVisually">✔</b></span>
+                                    </span>
+                                    <span class="TweetAuthor-screenName Identity-screenName" title="@realDonaldTrump" dir="ltr">@realDonaldTrump</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="Tweet-brand">
+                            <a href=""><span class="FollowButton-bird"><div class="Icon Icon--twitter " aria-label="View on Twitter" title="View on Twitter" role="presentation"></div>
+</span></a>
+                        </div>
+                    </div>
+                    <div class="Tweet-body e-entry-content">
+
+                        <div class="u-hiddenVisually js-inViewportScribingTarget"></div>
+                        <p class="Tweet-text e-entry-title" lang="en" dir="ltr" id='tweetText'>I feel sorry for Rosie 's new partner in love whose parents are devastated at the thought of their daughter being with <a class="PrettyLink profile customisable h-card" dir="ltr" data-mentioned-user-id="25203361"><span class="PrettyLink-prefix">@</span><span class="PrettyLink-value">Rosie</span></a>--a true loser.</p>
+
+                        <div class="TweetInfo">
+                            <div class="TweetInfo-like">
+                                <a class="TweetInfo-heart" title="Like" >
+                                    <div>
+                                        <div class="Icon Icon--heart " aria-label="Like" title="Like" role="img"></div>
+                                    </div>
+                                    <span class="TweetInfo-heartStat" id='likes'></span>
+                                </a>
+                            </div>
+                            <div class="TweetInfo-timeGeo">
+
+                                <a class="u-linkBlend u-url customisable-highlight long-permalink">
+                                    <div class="dt-updated" pubdate="" id="dateDiv" title="Time posted: December 14, 2011 16:45:55 (UTC)"></div>
+                                </a>
+                            </div>
+                            <div class="tweet-InformationCircle"><a class="Icon Icon--informationCircleWhite js-inViewportScribingTarget" title="Twitter Ads info and privacy"><span class="u-hiddenVisually">Twitter Ads info and privacy</span></a>
+                            </div>
+                        </div>
+
+                    </div>
+                </blockquote>
+            </div>
+
+            <a class="CallToAction" title="View the conversation on Twitter">
+                <div class="CallToAction-icon">
+                    <div class="Icon Icon--replyCTA " aria-label="View conversation on Twitter" title="View conversation on Twitter" role="img"></div>
+                </div>
+                <div class="CallToAction-text" id='people-talking'> </div>
+                <div class="CallToAction-chevron">
+                    <div class="Icon Icon--chevronRightCTA " aria-label="View on Twitter" title="View on Twitter" role="img"></div>
+                </div>
+            </a>
+
+        </div>
+
+      </div>
+      <button id='newTweet' style='width: 400px; max-width: 520px; margin: 1rem 0 1rem 0;' class='btn btn-success'>New Tweet</button>
+
+    </div>
+
+
+    <script>
+    function get(url, success) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function() {
+            if (request.status === 0 || request.status >= 200 && request.status < 400) {
+              var resp = request.responseText;
+
+              success(resp);
+            }
+        };
+        request.send();
+    }
+
+    function randomDate(start, end) {
+      return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    }
+    let memory = null;
+    let keys = null;
+    let hasMemoryLoaded = false;
+
+    function nextWord(currentState) {
+      if(!keys) keys = Object.keys(memory);
+      let curr = memory[currentState];
+      if(curr) {
+        return curr[(Math.random() * curr.length) | 0];
+      }
+      let randKey = keys[(Math.random() * keys.length) | 0];
+      let values = memory[randKey];
+      while(values.length <= 200) {
+        randKey = keys[(Math.random() * keys.length) | 0];
+        values = memory[randKey];
+      }
+      return values[(Math.random() * values.length) | 0];
+    }
+
+    function generateTweetText() {
+      let currentState = nextWord('');
+      let result = currentState;
+      let times = (Math.random() * 30) | 0
+      for(let i = 0; i < times; i++) {
+        currentState = nextWord(currentState);
+        if(currentState[0] == '@' || currentState[0] == '#' || currentState.indexOf('http') != -1) {
+          currentState = `<a class="PrettyLink profile customisable h-card" dir="ltr" data-mentioned-user-id="25203361" href="#"><span class="PrettyLink-prefix">${ currentState.indexOf('http') != -1 ? "" : currentState[0]}</span><span class="PrettyLink-value">${currentState.indexOf('http') != -1 ? currentState :  currentState.substr(1)}</span></a>`;
+        }
+
+        result += " " + currentState;
+      }
+      return result;
+    }
+
+    function tweet() {
+      let peopleTalkingDiv = document.getElementById('people-talking');
+      let likesDiv = document.getElementById('likes');
+      let dateDiv = document.getElementById('dateDiv');
+      let tweetText = document.getElementById('tweetText');
+      tweetText.innerHTML = generateTweetText();
+
+      peopleTalkingDiv.innerText = (Math.random() * 10000 | 0).toLocaleString() + " people are talking about this";
+      likesDiv.innerText = (Math.random() * 10000 | 0).toLocaleString();
+
+      let date = randomDate(new Date(2009, 5, 1), new Date());
+      dateDiv.innerHTML = moment(date).format('h:mm a - MMM Do YYYY');//"2:48 AM - Dec 8, 2012"
+    }
+
+    function loadData() {
+      if(!hasMemoryLoaded) {
+        get('./markov-chain.json', (data) => {
+          memory = JSON.parse(data);
+          hasMemoryLoaded = true;
+          tweet();
+        })
+      }
+    }
+
+
+    var tid = setInterval(function() {
+       if (document.readyState !== 'complete') return;
+       clearInterval(tid);
+       loadData();
+
+       let newTweetButton = document.getElementById('newTweet');
+       newTweetButton.onclick = () => tweet();
+     }, 100);
+    </script>
+</body>
+
+</html>
